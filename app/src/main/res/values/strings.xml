@@ -9,6 +9,7 @@
     <string name="check_button">Check</string>
     <string name="cheat_button">Cheat!</string>
     <string name="score_text">Score</string>
+    <string name="cheated_text">Cheaters Never Win!</string>
 
     <string name="score_value"></string>
 
@@ -34,7 +35,7 @@
     <string name="show_answer_button">Show Answer</string>
 
     <string-array name="question_3_answers">
-        <item>jakarta</item>
+        <item>Jakarta</item>
         <item>Ja kar ta</item>
     </string-array>
 

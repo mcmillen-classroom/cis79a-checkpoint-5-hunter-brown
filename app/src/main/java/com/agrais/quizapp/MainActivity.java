@@ -2,6 +2,7 @@ package com.agrais.quizapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -14,8 +15,11 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final int REQUEST_CODE_CHEAT = 0;
+
     private TextView mTextView;
     private TextView mScoreView;
+
 
     private EditText mEditText;
 
@@ -84,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mScoreView=(TextView)findViewById(R.id.score_value);
 
 
-
         //Initialize Array of Questions
         mQuestions= new Question[7];
         mIndex = 0;
@@ -109,6 +112,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //Set up the first Question
         setupQuestion();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode,Intent resultData){
+        if (resultCode != RESULT_OK){
+            return;
+        }
+        if (requestCode== REQUEST_CODE_CHEAT && resultData!=null){
+        mCheated=CheatActivity.didCheat(resultData);
+        }
     }
 
     @Override
@@ -184,6 +197,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         else if (view.getId()==R.id.cheat_button){
             //TODO launch cheat activity
+
+            Intent CheatIntent=CheatActivity.newIntent(this,mQuestions[mIndex]);
+            startActivityForResult(CheatIntent,REQUEST_CODE_CHEAT);
         }
 
 
@@ -215,7 +231,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
     public boolean checkAnswer(boolean userInput){
-        if( mQuestions[mIndex].checkAnswer(userInput)){
+        if (mCheated){
+            Toast myToast = Toast.makeText(this, getText(R.string.cheated_text), Toast.LENGTH_SHORT);
+            myToast.show();
+            return false;
+        }
+        else if( mQuestions[mIndex].checkAnswer(userInput)){
             Toast myToast = Toast.makeText(this, "You are correct,", Toast.LENGTH_SHORT);
             myToast.setGravity(Gravity.TOP, 0, 0);
             myToast.show();
@@ -235,7 +256,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
     public boolean checkAnswer(String userInput){
-        if( mQuestions[mIndex].checkAnswer(userInput)){
+        if (mCheated){
+            Toast myToast = Toast.makeText(this, getText(R.string.cheated_text), Toast.LENGTH_SHORT);
+            myToast.show();
+            return false;
+        }
+        else if( mQuestions[mIndex].checkAnswer(userInput)){
             Toast myToast = Toast.makeText(this, "You are correct,", Toast.LENGTH_SHORT);
             myToast.setGravity(Gravity.TOP, 0, 0);
             myToast.show();
@@ -255,7 +281,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
     public boolean checkAnswer(int userInput){
-        if( mQuestions[mIndex].checkAnswer(userInput)){
+        if (mCheated){
+            Toast myToast = Toast.makeText(this, getText(R.string.cheated_text), Toast.LENGTH_SHORT);
+            myToast.show();
+            return false;
+        }
+        else if( mQuestions[mIndex].checkAnswer(userInput)){
             Toast myToast = Toast.makeText(this, "You are correct,", Toast.LENGTH_SHORT);
             myToast.setGravity(Gravity.TOP, 0, 0);
             myToast.show();

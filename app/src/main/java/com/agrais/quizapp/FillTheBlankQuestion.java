@@ -1,5 +1,10 @@
 package com.agrais.quizapp;
 
+import android.content.Context;
+
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
 public class FillTheBlankQuestion extends Question {
     private String[] mFillAnswers;
     public FillTheBlankQuestion(int TextResId, int HintResId, String[] fillAnswers) {
@@ -17,5 +22,10 @@ public class FillTheBlankQuestion extends Question {
     }
     @Override public boolean isFillTheBlankQuestion(){
         return true;
+    }
+
+    @Override
+    public String getAnswerText(Context ctx){
+        return Arrays.toString(mFillAnswers);
     }
 }

@@ -1,5 +1,7 @@
 package com.agrais.quizapp;
 
+import android.content.Context;
+
 import com.agrais.quizapp.Question;
 
 public class MultipleChoiceQuestion extends Question {
@@ -22,5 +24,11 @@ public class MultipleChoiceQuestion extends Question {
     @Override
     public boolean checkAnswer(int userChoice){
         return mAnswer == userChoice;
+    }
+
+    @Override
+    public String getAnswerText(Context ctx){
+        String[] options= ctx.getResources().getStringArray(mOptionsResId);
+        return options[mAnswer];
     }
 }

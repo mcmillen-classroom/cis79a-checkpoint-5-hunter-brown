@@ -1,5 +1,7 @@
 package com.agrais.quizapp;
 
+import android.content.Context;
+
 import java.io.StreamCorruptedException;
 
 public class   Question {
@@ -19,6 +21,14 @@ public class   Question {
 
     public void setTextResId(int textResId) {
         mTextResId = textResId;
+    }
+
+    public String getText(Context ctx){
+        return ctx.getString(mTextResId);
+    }
+    //stub
+    public String getAnswerText (Context ctx){
+        return "";
     }
 
     public int getHintResId() {

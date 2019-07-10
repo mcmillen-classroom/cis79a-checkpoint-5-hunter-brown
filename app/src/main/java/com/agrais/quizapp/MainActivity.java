@@ -2,6 +2,7 @@ package com.agrais.quizapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -15,7 +16,9 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+
     private static final int REQUEST_CODE_CHEAT = 0;
+    private static final int REQUEST_QUIZ_OVER = 0;
 
     private TextView mTextView;
     private TextView mScoreView;
@@ -44,6 +47,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Question[] mQuestions;
     private int mIndex;
     private int mScore;
+    private int mQuizLength = 7;
+
+    //checking for if questions hae been attempted
+    private boolean[] mAttempts= new boolean[mQuizLength];
+
+    public int getScore(){
+        return mScore;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         //Initialize Array of Questions
-        mQuestions= new Question[7];
+        mQuestions= new Question[mQuizLength];
         mIndex = 0;
 
 
@@ -128,25 +140,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         if (view.getId()== R.id.true_button) {
             ButtonColorChange(R.id.true_button,checkAnswer(true));
+            mAttempts[mIndex]=true;
 
         }
         else if (view.getId()== R.id.false_button) {
             ButtonColorChange(R.id.false_button,checkAnswer(false));
+            mAttempts[mIndex]=true;
         }
         else if (view.getId()== R.id.check_button){
             ButtonColorChange(R.id.check_button, checkAnswer(mEditText.getText().toString()));
+            mAttempts[mIndex]=true;
         }
         else if (view.getId() == R.id.A_button){
             ButtonColorChange(R.id.A_button,checkAnswer(0));
+            mAttempts[mIndex]=true;
         }
         else if (view.getId() == R.id.B_button){
             ButtonColorChange(R.id.B_button,checkAnswer(1));
+            mAttempts[mIndex]=true;
         }
         else if (view.getId() == R.id.C_button){
             ButtonColorChange(R.id.C_button,checkAnswer(2));
+            mAttempts[mIndex]=true;
         }
         else if (view.getId() == R.id.D_button){
             ButtonColorChange(R.id.D_button, checkAnswer(3));
+            mAttempts[mIndex]=true;
         }
         else if (view.getId()== R.id.hint_button) {
             Toast myToast = Toast.makeText(this,  mQuestions[mIndex].getHintResId(), Toast.LENGTH_LONG);
@@ -196,8 +215,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         else if (view.getId()==R.id.cheat_button){
-            //TODO launch cheat activity
-
+            //launch CheatActivity
             Intent CheatIntent=CheatActivity.newIntent(this,mQuestions[mIndex]);
             startActivityForResult(CheatIntent,REQUEST_CODE_CHEAT);
         }
@@ -207,15 +225,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void setupQuestion(){
         mTextView.setText(mQuestions[mIndex].getTextResId());
-        if(mQuestions[mIndex].isTrueFalseQuestion()){
+
+        if(isAllTrue(mAttempts)){
+            //Launch Quiz Over Activity
+            Intent QuizOverIntent= QuizOverActivity.newIntent(this,this);
+            startActivityForResult(QuizOverIntent,REQUEST_QUIZ_OVER);
+        }
+         else if(mQuestions[mIndex].isTrueFalseQuestion()){
             mTrueFalseContainer.setVisibility(View.VISIBLE);
             mFillTheBlankContainer.setVisibility((View.GONE));
             mMultipleChoiceContainer.setVisibility(View.GONE);
+            if (mAttempts[mIndex]){
+                mTrueButton.setEnabled(false);
+                mFalseButton.setEnabled(false);
+            }
+            else {
+                mTrueButton.setEnabled(true);
+                mFalseButton.setEnabled(true);
+            }
+
         }
         else if (mQuestions[mIndex].isFillTheBlankQuestion()){
             mTrueFalseContainer.setVisibility(View.GONE);
             mFillTheBlankContainer.setVisibility((View.VISIBLE));
             mMultipleChoiceContainer.setVisibility(View.GONE);
+            if (mAttempts[mIndex]){
+                mCheckButton.setEnabled(false);
+                mFillTheBlankContainer.setEnabled(false);
+            }
+            else {
+                mCheckButton.setEnabled(true);
+                mFillTheBlankContainer.setEnabled(true);
+            }
         }
         else if (mQuestions[mIndex].isMultipleChoiceQuestion()){
             mTrueFalseContainer.setVisibility(View.GONE);
@@ -227,6 +268,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mBButton.setText(options[1]);
             mCButton.setText(options[2]);
             mDButton.setText(options[3]);
+            if (mAttempts[mIndex]){
+                mAButton.setEnabled(false);
+                mBButton.setEnabled(false);
+                mCButton.setEnabled(false);
+                mDButton.setEnabled(false);
+            }
+            else {
+                mAButton.setEnabled(true);
+                mBButton.setEnabled(true);
+                mCButton.setEnabled(true);
+                mDButton.setEnabled(true);
+            }
         }
 
     }
@@ -358,6 +411,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mDButton.setBackgroundColor(getResources().getColor( R.color.colorFalse));
         }
 
+    }
+    public static boolean isAllTrue(boolean[] array)
+    {
+        for(boolean b : array) if(!b) return false;
+        return true;
     }
 
 }

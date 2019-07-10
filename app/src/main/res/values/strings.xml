@@ -33,6 +33,8 @@
 
     <string name="cheat_warning">Are you sure you want to Cheat? Cheaters never win...</string>
     <string name="show_answer_button">Show Answer</string>
+    <string name="final_text_view">Congratulations you have Finished the Test</string>
+    <string name="final_score_view">Your Final Score:</string>
 
     <string-array name="question_3_answers">
         <item>Jakarta</item>
